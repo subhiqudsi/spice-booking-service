@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" width="1000" height="300" role="img" aria-label="Status webhook delivery: the submit worker saves the final status (confirmed or failed) and an outbox row in one Postgres transaction and enqueues a BullMQ job keyed by event id. The webhook processor signs and posts it to RESERVATION_WEBHOOK_URL. A 2xx marks it delivered. Errors retry with backoff through the queue. After the maximum attempts or a permanent 4xx the event is dead, written to the error log and alerted. A sweeper re-queues rows stuck pending for more than five minutes.">
+  <title>Status webhook delivery: the submit worker saves the final status (confirmed or failed) and an outbox row in one Postgres transaction and enqueues a BullMQ job keyed by event id. The webhook processor signs and posts it to RESERVATION_WEBHOOK_URL. A 2xx marks it delivered. Errors retry with backoff through the queue. After the maximum attempts or a permanent 4xx the event is dead, written to the error log and alerted. A sweeper re-queues rows stuck pending for more than five minutes.</title>
+  <style>
+    svg { --surface:#ffffff; --surface-2:#eceef3; --fg:#1a2030; --muted:#5a6275; --line:#c6ccd8; --edge:#6b7386; --accent:#3546c8; --ok:#1d7f55; --bad:#b8353a; --warn:#9a6200; }
+    @media (prefers-color-scheme: dark) {
+      svg { --surface:#161b24; --surface-2:#1d2430; --fg:#e5e8ef; --muted:#9aa2b3; --line:#333b4a; --edge:#8b93a5; --accent:#93a1ff; --ok:#4fc38f; --bad:#f07a7e; --warn:#e3b04f; }
+    }
+    .bg { fill: var(--surface); }
+    .n { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+    .n.hl { stroke: var(--accent); stroke-width: 1.6; }
+    .n.ok { stroke: var(--ok); stroke-width: 1.6; }
+    .n.bad { stroke: var(--bad); stroke-width: 1.6; }
+    .n.warn { stroke: var(--warn); stroke-width: 1.6; }
+    .grp { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+    .gt { fill: var(--muted); font: 600 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+    .t { fill: var(--fg); font: 600 13px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .s { fill: var(--muted); font: 400 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .e { stroke: var(--edge); stroke-width: 1.4; fill: none; }
+    .e.d { stroke-dasharray: 5 4; }
+    .e.a { stroke: var(--accent); stroke-width: 1.8; }
+    .e.x { stroke: var(--bad); stroke-dasharray: 4 4; }
+    .life { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; }
+    .lb { fill: var(--muted); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+    .lb.a { fill: var(--accent); }
+    .lb.x { fill: var(--bad); }
+    .mk { fill: var(--edge); }
+    .mk.a { fill: var(--accent); }
+    .dot { fill: var(--fg); }
+    .cross { stroke: var(--bad); stroke-width: 2.2; }
+    .boundary { fill: none; stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 6 5; }
+    .tx { fill: var(--fg); font: 500 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ta { fill: var(--accent); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1000" height="300" rx="10"/>
+
+        <defs>
+          <marker id="f6a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="f6b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk a" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <rect class="n" x="16" y="60" width="140" height="56" rx="6"/><text class="t" x="86" y="84" text-anchor="middle">Submit worker</text><text class="s" x="86" y="101" text-anchor="middle">booking final</text>
+        <rect class="n" x="196" y="60" width="170" height="56" rx="6"/><text class="t" x="281" y="84" text-anchor="middle">Postgres</text><text class="s" x="281" y="101" text-anchor="middle">status + outbox row</text>
+        <rect class="n" x="406" y="60" width="150" height="56" rx="6"/><text class="t" x="481" y="84" text-anchor="middle">BullMQ</text><text class="s" x="481" y="101" text-anchor="middle">jobId = event_id</text>
+        <rect class="n" x="596" y="60" width="160" height="56" rx="6"/><text class="t" x="676" y="84" text-anchor="middle">Webhook processor</text><text class="s" x="676" y="101" text-anchor="middle">HMAC sign · POST</text>
+        <rect class="n hl" x="796" y="60" width="188" height="56" rx="6"/><text class="t" x="890" y="84" text-anchor="middle">RESERVATION_WEBHOOK_URL</text><text class="s" x="890" y="101" text-anchor="middle">your receiver</text>
+
+        <line class="e" x1="156" y1="88" x2="194" y2="88" marker-end="url(#f6a)"/><text class="lb" x="175" y="52" text-anchor="middle">one transaction</text>
+        <line class="e" x1="366" y1="88" x2="404" y2="88" marker-end="url(#f6a)"/><text class="lb" x="385" y="80" text-anchor="middle">job</text>
+        <line class="e" x1="556" y1="88" x2="594" y2="88" marker-end="url(#f6a)"/>
+        <line class="e a" x1="756" y1="88" x2="794" y2="88" marker-end="url(#f6b)"/><text class="lb a" x="775" y="52" text-anchor="middle">signed POST</text>
+
+        <rect class="n ok" x="796" y="216" width="188" height="52" rx="6"/><text class="t" x="890" y="238" text-anchor="middle">delivered</text><text class="s" x="890" y="255" text-anchor="middle">audit: webhook.delivered</text>
+        <line class="e" x1="890" y1="116" x2="890" y2="214" marker-end="url(#f6a)"/><text class="lb" x="898" y="170">2xx</text>
+
+        <path class="e d" d="M636 116V170H481V118" marker-end="url(#f6a)"/><text class="lb" x="558" y="162" text-anchor="middle">error → backoff 30 s … 32 min</text>
+
+        <rect class="n bad" x="596" y="216" width="160" height="52" rx="6"/><text class="t" x="676" y="238" text-anchor="middle">dead</text><text class="s" x="676" y="255" text-anchor="middle">error log · alert · replay</text>
+        <line class="e x" x1="716" y1="116" x2="716" y2="214" marker-end="url(#f6a)"/><text class="lb x" x="724" y="200">max attempts / 4xx</text>
+
+        <rect class="n" x="196" y="216" width="170" height="52" rx="6"/><text class="t" x="281" y="238" text-anchor="middle">Outbox sweeper</text><text class="s" x="281" y="255" text-anchor="middle">every minute</text>
+        <path class="e d" d="M366 242H446V118" marker-end="url(#f6a)"/><text class="lb" x="406" y="234" text-anchor="middle">stuck &gt; 5 min</text>
+      </svg>

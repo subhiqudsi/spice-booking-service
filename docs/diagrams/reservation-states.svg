@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 240" width="1040" height="240" role="img" aria-label="Reservation states: an accepted request starts as pending. It may retry up to twice when a failure happened before the confirm click. It becomes confirmed when the confirmation details match, or failed when blocked, on an unexpected step, a mismatch or an unknown outcome. Both final states send one event to the reservation status webhook.">
+  <title>Reservation states: an accepted request starts as pending. It may retry up to twice when a failure happened before the confirm click. It becomes confirmed when the confirmation details match, or failed when blocked, on an unexpected step, a mismatch or an unknown outcome. Both final states send one event to the reservation status webhook.</title>
+  <style>
+    svg { --surface:#ffffff; --surface-2:#eceef3; --fg:#1a2030; --muted:#5a6275; --line:#c6ccd8; --edge:#6b7386; --accent:#3546c8; --ok:#1d7f55; --bad:#b8353a; --warn:#9a6200; }
+    @media (prefers-color-scheme: dark) {
+      svg { --surface:#161b24; --surface-2:#1d2430; --fg:#e5e8ef; --muted:#9aa2b3; --line:#333b4a; --edge:#8b93a5; --accent:#93a1ff; --ok:#4fc38f; --bad:#f07a7e; --warn:#e3b04f; }
+    }
+    .bg { fill: var(--surface); }
+    .n { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+    .n.hl { stroke: var(--accent); stroke-width: 1.6; }
+    .n.ok { stroke: var(--ok); stroke-width: 1.6; }
+    .n.bad { stroke: var(--bad); stroke-width: 1.6; }
+    .n.warn { stroke: var(--warn); stroke-width: 1.6; }
+    .grp { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+    .gt { fill: var(--muted); font: 600 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+    .t { fill: var(--fg); font: 600 13px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .s { fill: var(--muted); font: 400 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .e { stroke: var(--edge); stroke-width: 1.4; fill: none; }
+    .e.d { stroke-dasharray: 5 4; }
+    .e.a { stroke: var(--accent); stroke-width: 1.8; }
+    .e.x { stroke: var(--bad); stroke-dasharray: 4 4; }
+    .life { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; }
+    .lb { fill: var(--muted); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+    .lb.a { fill: var(--accent); }
+    .lb.x { fill: var(--bad); }
+    .mk { fill: var(--edge); }
+    .mk.a { fill: var(--accent); }
+    .dot { fill: var(--fg); }
+    .cross { stroke: var(--bad); stroke-width: 2.2; }
+    .boundary { fill: none; stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 6 5; }
+    .tx { fill: var(--fg); font: 500 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ta { fill: var(--accent); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1040" height="240" rx="10"/>
+
+        <defs>
+          <marker id="f3a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="f3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk a" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <circle class="dot" cx="40" cy="140" r="6"/>
+        <line class="e" x1="46" y1="140" x2="118" y2="140" marker-end="url(#f3a)"/><text class="lb" x="82" y="132" text-anchor="middle">202</text>
+        <rect class="n" x="120" y="116" width="150" height="48" rx="24"/><text class="t" x="195" y="137" text-anchor="middle">pending</text><text class="s" x="195" y="153" text-anchor="middle">job queued</text>
+        <path class="e d" d="M170 116C170 72 222 72 222 113" marker-end="url(#f3a)"/><text class="lb" x="196" y="66" text-anchor="middle">retry ≤2, before confirm click</text>
+        <rect class="n ok" x="480" y="40" width="220" height="48" rx="24"/><text class="t" x="590" y="61" text-anchor="middle">confirmed</text><text class="s" x="590" y="77" text-anchor="middle">platform_confirmation_code</text>
+        <rect class="n bad" x="480" y="168" width="220" height="48" rx="24"/><text class="t" x="590" y="189" text-anchor="middle">failed</text><text class="s" x="590" y="205" text-anchor="middle">error_code · submitted flag</text>
+        <rect class="n hl" x="830" y="104" width="196" height="48" rx="6"/><text class="t" x="928" y="125" text-anchor="middle">Status webhook</text><text class="s" x="928" y="141" text-anchor="middle">RESERVATION_WEBHOOK_URL</text>
+        <line class="e" x1="270" y1="132" x2="478" y2="66" marker-end="url(#f3a)"/><text class="lb" x="372" y="88" text-anchor="middle">details verified</text>
+        <line class="e" x1="270" y1="148" x2="478" y2="190" marker-end="url(#f3a)"/><text class="lb" x="372" y="186" text-anchor="middle">blocked · unexpected · unknown</text>
+        <line class="e a" x1="700" y1="64" x2="828" y2="118" marker-end="url(#f3b)"/><text class="lb a" x="764" y="80" text-anchor="middle">reservation.confirmed</text>
+        <line class="e a" x1="700" y1="192" x2="828" y2="138" marker-end="url(#f3b)"/><text class="lb a" x="764" y="186" text-anchor="middle">reservation.failed</text>
+      </svg>

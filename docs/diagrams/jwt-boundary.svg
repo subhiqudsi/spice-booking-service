@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 284" width="820" height="284" role="img" aria-label="Where the JWT may travel: it reaches the API request, which forwards it only to the Contact system and Spice services. Queue jobs, browser scripts, agents, sevenrooms.com, logs, audit rows and error rows never receive it.">
+  <title>Where the JWT may travel: it reaches the API request, which forwards it only to the Contact system and Spice services. Queue jobs, browser scripts, agents, sevenrooms.com, logs, audit rows and error rows never receive it.</title>
+  <style>
+    svg { --surface:#ffffff; --surface-2:#eceef3; --fg:#1a2030; --muted:#5a6275; --line:#c6ccd8; --edge:#6b7386; --accent:#3546c8; --ok:#1d7f55; --bad:#b8353a; --warn:#9a6200; }
+    @media (prefers-color-scheme: dark) {
+      svg { --surface:#161b24; --surface-2:#1d2430; --fg:#e5e8ef; --muted:#9aa2b3; --line:#333b4a; --edge:#8b93a5; --accent:#93a1ff; --ok:#4fc38f; --bad:#f07a7e; --warn:#e3b04f; }
+    }
+    .bg { fill: var(--surface); }
+    .n { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+    .n.hl { stroke: var(--accent); stroke-width: 1.6; }
+    .n.ok { stroke: var(--ok); stroke-width: 1.6; }
+    .n.bad { stroke: var(--bad); stroke-width: 1.6; }
+    .n.warn { stroke: var(--warn); stroke-width: 1.6; }
+    .grp { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+    .gt { fill: var(--muted); font: 600 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+    .t { fill: var(--fg); font: 600 13px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .s { fill: var(--muted); font: 400 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .e { stroke: var(--edge); stroke-width: 1.4; fill: none; }
+    .e.d { stroke-dasharray: 5 4; }
+    .e.a { stroke: var(--accent); stroke-width: 1.8; }
+    .e.x { stroke: var(--bad); stroke-dasharray: 4 4; }
+    .life { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; }
+    .lb { fill: var(--muted); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+    .lb.a { fill: var(--accent); }
+    .lb.x { fill: var(--bad); }
+    .mk { fill: var(--edge); }
+    .mk.a { fill: var(--accent); }
+    .dot { fill: var(--fg); }
+    .cross { stroke: var(--bad); stroke-width: 2.2; }
+    .boundary { fill: none; stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 6 5; }
+    .tx { fill: var(--fg); font: 500 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ta { fill: var(--accent); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+  <rect class="bg" x="0" y="0" width="820" height="284" rx="10"/>
+
+        <defs>
+          <marker id="f5a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+          <marker id="f5b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="mk a" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <rect class="n" x="16" y="116" width="120" height="48" rx="6"/><text class="t" x="76" y="137" text-anchor="middle">Spice backend</text><text class="s" x="76" y="153" text-anchor="middle">sends key + JWT</text>
+        <rect class="n hl" x="196" y="116" width="168" height="48" rx="6"/><text class="t" x="280" y="137" text-anchor="middle">API request scope</text><text class="s" x="280" y="153" text-anchor="middle">token lives here only</text>
+        <line class="e" x1="136" y1="140" x2="194" y2="140" marker-end="url(#f5a)"/><text class="lb" x="165" y="132" text-anchor="middle">JWT</text>
+
+        <text class="gt" x="470" y="30">forwarded to (allowlist)</text>
+        <rect class="n" x="470" y="40" width="168" height="44" rx="6"/><text class="t" x="554" y="61" text-anchor="middle">Contact system</text><text class="s" x="554" y="76" text-anchor="middle">contact lookup</text>
+        <rect class="n" x="660" y="40" width="144" height="44" rx="6"/><text class="t" x="732" y="61" text-anchor="middle">Spice services</text><text class="s" x="732" y="76" text-anchor="middle">future calls</text>
+        <path class="e a" d="M364 128L468 66" marker-end="url(#f5b)"/>
+        <path class="e a" d="M364 128C460 108 600 104 700 86" marker-end="url(#f5b)"/>
+        <text class="lb a" x="418" y="88" text-anchor="middle">forwarded</text>
+
+        <rect class="boundary" x="420" y="168" width="384" height="104" rx="8"/>
+        <text class="gt" x="436" y="190" style="fill: var(--bad)">never receives the token</text>
+        <text class="tx" x="436" y="220">BullMQ jobs</text><text class="tx" x="566" y="220">browser scripts</text><text class="tx" x="700" y="220">AI agents</text>
+        <text class="tx" x="436" y="250">sevenrooms.com</text><text class="tx" x="566" y="250">logs · audit</text><text class="tx" x="700" y="250">error rows</text>
+        <line class="e x" x1="364" y1="152" x2="404" y2="204"/>
+        <line class="cross" x1="398" y1="196" x2="412" y2="212"/><line class="cross" x1="412" y1="196" x2="398" y2="212"/>
+        <text class="lb x" x="360" y="196" text-anchor="end">blocked</text>
+      </svg>

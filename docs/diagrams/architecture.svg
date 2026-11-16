@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 508" width="1080" height="508" role="img" aria-label="Architecture: the Spice backend calls the api app, which checks the API key and JWT, reads the shift cache, queues bookings in BullMQ and appends audit rows to Postgres. The worker app takes queued jobs, runs browser scripts in a sandbox against sevenrooms.com, its agents commit repaired scripts to the script registry, and a script failure queues a repair for the agents, and the webhook sender posts every final booking status from the Postgres outbox to the status webhook URL.">
+  <title>Architecture: the Spice backend calls the api app, which checks the API key and JWT, reads the shift cache, queues bookings in BullMQ and appends audit rows to Postgres. The worker app takes queued jobs, runs browser scripts in a sandbox against sevenrooms.com, its agents commit repaired scripts to the script registry, and a script failure queues a repair for the agents, and the webhook sender posts every final booking status from the Postgres outbox to the status webhook URL.</title>
+  <style>
+    svg { --surface:#ffffff; --surface-2:#eceef3; --fg:#1a2030; --muted:#5a6275; --line:#c6ccd8; --edge:#6b7386; --accent:#3546c8; --ok:#1d7f55; --bad:#b8353a; --warn:#9a6200; }
+    @media (prefers-color-scheme: dark) {
+      svg { --surface:#161b24; --surface-2:#1d2430; --fg:#e5e8ef; --muted:#9aa2b3; --line:#333b4a; --edge:#8b93a5; --accent:#93a1ff; --ok:#4fc38f; --bad:#f07a7e; --warn:#e3b04f; }
+    }
+    .bg { fill: var(--surface); }
+    .n { fill: var(--surface); stroke: var(--line); stroke-width: 1.2; }
+    .n.hl { stroke: var(--accent); stroke-width: 1.6; }
+    .n.ok { stroke: var(--ok); stroke-width: 1.6; }
+    .n.bad { stroke: var(--bad); stroke-width: 1.6; }
+    .n.warn { stroke: var(--warn); stroke-width: 1.6; }
+    .grp { fill: var(--surface-2); stroke: var(--line); stroke-width: 1; }
+    .gt { fill: var(--muted); font: 600 11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing: 0.06em; text-transform: uppercase; }
+    .t { fill: var(--fg); font: 600 13px -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; }
+    .s { fill: var(--muted); font: 400 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .e { stroke: var(--edge); stroke-width: 1.4; fill: none; }
+    .e.d { stroke-dasharray: 5 4; }
+    .e.a { stroke: var(--accent); stroke-width: 1.8; }
+    .e.x { stroke: var(--bad); stroke-dasharray: 4 4; }
+    .life { stroke: var(--line); stroke-width: 1; stroke-dasharray: 3 4; }
+    .lb { fill: var(--muted); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+    .lb.a { fill: var(--accent); }
+    .lb.x { fill: var(--bad); }
+    .mk { fill: var(--edge); }
+    .mk.a { fill: var(--accent); }
+    .dot { fill: var(--fg); }
+    .cross { stroke: var(--bad); stroke-width: 2.2; }
+    .boundary { fill: none; stroke: var(--bad); stroke-width: 1.2; stroke-dasharray: 6 5; }
+    .tx { fill: var(--fg); font: 500 12px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .ta { fill: var(--accent); font: 500 10.5px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+  </style>
+  <rect class="bg" x="0" y="0" width="1080" height="508" rx="10"/>
+
+        <defs>
+          <marker id="f1a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path class="mk" d="M0 0L10 5L0 10z"/></marker>
+        </defs>
+        <!-- groups -->
+        <rect class="grp" x="176" y="32" width="248" height="384" rx="10"/>
+        <text class="gt" x="192" y="64">api app · NestJS</text>
+        <rect class="grp" x="648" y="32" width="248" height="460" rx="10"/>
+        <text class="gt" x="664" y="64">worker app · NestJS</text>
+
+        <!-- left column -->
+        <rect class="n" x="16" y="96" width="120" height="48" rx="6"/><text class="t" x="76" y="117" text-anchor="middle">Spice backend</text><text class="s" x="76" y="133" text-anchor="middle">calling system</text>
+        <rect class="n" x="16" y="172" width="120" height="48" rx="6"/><text class="t" x="76" y="193" text-anchor="middle">Token issuer</text><text class="s" x="76" y="209" text-anchor="middle">JWKS keys</text>
+        <rect class="n" x="16" y="248" width="120" height="48" rx="6"/><text class="t" x="76" y="269" text-anchor="middle">Contact system</text><text class="s" x="76" y="285" text-anchor="middle">CONTACT_API_* env</text>
+
+        <!-- api app -->
+        <rect class="n hl" x="192" y="96" width="216" height="48" rx="6"/><text class="t" x="300" y="117" text-anchor="middle">Guards</text><text class="s" x="300" y="133" text-anchor="middle">x-api-key · JWT</text>
+        <rect class="n" x="192" y="172" width="216" height="48" rx="6"/><text class="t" x="300" y="193" text-anchor="middle">Controllers</text><text class="s" x="300" y="209" text-anchor="middle">shifts · reservations</text>
+        <rect class="n" x="192" y="248" width="216" height="48" rx="6"/><text class="t" x="300" y="269" text-anchor="middle">Platform router</text><text class="s" x="300" y="285" text-anchor="middle">SevenRooms adapter</text>
+        <rect class="n" x="192" y="324" width="216" height="48" rx="6"/><text class="t" x="300" y="345" text-anchor="middle">Audit + error capture</text><text class="s" x="300" y="361" text-anchor="middle">interceptor · filter</text>
+
+        <!-- stores -->
+        <rect class="n" x="456" y="172" width="160" height="48" rx="6"/><text class="t" x="536" y="193" text-anchor="middle">Redis cache</text><text class="s" x="536" y="209" text-anchor="middle">shift times · 1–3 min</text>
+        <rect class="n" x="456" y="248" width="160" height="48" rx="6"/><text class="t" x="536" y="269" text-anchor="middle">BullMQ queue</text><text class="s" x="536" y="285" text-anchor="middle">get_shifts · submit</text>
+        <rect class="n" x="456" y="324" width="160" height="48" rx="6"/><text class="t" x="536" y="345" text-anchor="middle">Postgres</text><text class="s" x="536" y="361" text-anchor="middle">data · audit · errors</text>
+
+        <!-- worker app -->
+        <rect class="n" x="664" y="96" width="216" height="48" rx="6"/><text class="t" x="772" y="117" text-anchor="middle">AI agents (Claude)</text><text class="s" x="772" y="133" text-anchor="middle">venue mapping · script repair</text>
+        <rect class="n" x="664" y="172" width="216" height="48" rx="6"/><text class="t" x="772" y="193" text-anchor="middle">Repair trigger</text><text class="s" x="772" y="209" text-anchor="middle">1 repair per script</text>
+        <rect class="n" x="664" y="248" width="216" height="48" rx="6"/><text class="t" x="772" y="269" text-anchor="middle">Browser workers</text><text class="s" x="772" y="285" text-anchor="middle">Playwright pool</text>
+        <rect class="n hl" x="664" y="324" width="216" height="48" rx="6"/><text class="t" x="772" y="345" text-anchor="middle">Script sandbox</text><text class="s" x="772" y="361" text-anchor="middle">child process · egress allowlist</text>
+
+        <!-- right column -->
+        <rect class="n" x="928" y="96" width="136" height="48" rx="6"/><text class="t" x="996" y="117" text-anchor="middle">Script registry</text><text class="s" x="996" y="133" text-anchor="middle">git repo</text>
+        <rect class="n" x="928" y="324" width="136" height="48" rx="6"/><text class="t" x="996" y="345" text-anchor="middle">sevenrooms.com</text><text class="s" x="996" y="361" text-anchor="middle">booking page</text>
+        <rect class="n" x="664" y="420" width="216" height="48" rx="6"/><text class="t" x="772" y="441" text-anchor="middle">Webhook sender</text><text class="s" x="772" y="457" text-anchor="middle">retries · backoff</text>
+        <rect class="n hl" x="928" y="420" width="136" height="48" rx="6"/><text class="t" x="996" y="441" text-anchor="middle">Status webhook</text><text class="s" x="996" y="457" text-anchor="middle">RESERVATION_WEBHOOK_URL</text>
+        <path class="e" d="M536 372V444H662" marker-end="url(#f1a)"/><text class="lb" x="600" y="436" text-anchor="middle">outbox</text>
+        <line class="e a" x1="880" y1="444" x2="926" y2="444" marker-end="url(#f1a)"/><text class="lb a" x="904" y="436" text-anchor="middle">POST</text>
+
+        <!-- edges -->
+        <line class="e" x1="136" y1="120" x2="190" y2="120" marker-end="url(#f1a)"/><text class="lb" x="163" y="112" text-anchor="middle">key+JWT</text>
+        <line class="e" x1="192" y1="138" x2="138" y2="182" marker-end="url(#f1a)"/><text class="lb" x="156" y="162" text-anchor="middle">keys</text>
+        <line class="e" x1="192" y1="212" x2="138" y2="258" marker-end="url(#f1a)"/><text class="lb" x="158" y="240" text-anchor="middle">JWT</text>
+        <line class="e" x1="300" y1="144" x2="300" y2="170" marker-end="url(#f1a)"/>
+        <line class="e" x1="300" y1="220" x2="300" y2="246" marker-end="url(#f1a)"/>
+        <line class="e" x1="408" y1="196" x2="454" y2="196" marker-end="url(#f1a)"/><text class="lb" x="432" y="188" text-anchor="middle">cache</text>
+        <line class="e" x1="408" y1="272" x2="454" y2="272" marker-end="url(#f1a)"/><text class="lb" x="432" y="264" text-anchor="middle">enqueue</text>
+        <line class="e" x1="408" y1="348" x2="454" y2="348" marker-end="url(#f1a)"/><text class="lb" x="432" y="340" text-anchor="middle">append</text>
+        <line class="e" x1="616" y1="272" x2="662" y2="272" marker-end="url(#f1a)"/><text class="lb" x="640" y="264" text-anchor="middle">jobs</text>
+        <line class="e" x1="772" y1="296" x2="772" y2="322" marker-end="url(#f1a)"/><text class="lb" x="782" y="313">runs</text>
+        <line class="e" x1="880" y1="348" x2="926" y2="348" marker-end="url(#f1a)"/><text class="lb" x="904" y="340" text-anchor="middle">HTTPS</text>
+        <line class="e" x1="880" y1="120" x2="926" y2="120" marker-end="url(#f1a)"/><text class="lb" x="904" y="112" text-anchor="middle">commit</text>
+        <path class="e d" d="M996 144V272H882" marker-end="url(#f1a)"/><text class="lb" x="940" y="264" text-anchor="middle">load</text>
+        <line class="e" x1="772" y1="172" x2="772" y2="146" marker-end="url(#f1a)"/><text class="lb" x="782" y="163">repair</text>
+        <line class="e x" x1="740" y1="248" x2="740" y2="222" marker-end="url(#f1a)"/><text class="lb x" x="732" y="239" text-anchor="end">failure</text>
+      </svg>
