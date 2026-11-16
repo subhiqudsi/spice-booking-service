@@ -1,0 +1,231 @@
+// Data model for the booking service. See DESIGN.md §6.
+// Scripts, script_runs and agent_runs arrive with the SevenRooms and agent steps of the delivery plan.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RestaurantSource {
+  manual
+  spice_sync
+}
+
+enum MappingStatus {
+  proposed
+  verified
+  rejected
+  stale
+}
+
+enum MappingSource {
+  agent
+  human
+}
+
+enum RecaptchaMode {
+  off
+  invisible
+  step_up
+  always
+}
+
+enum ActiveStatus {
+  active
+  revoked
+}
+
+enum ReservationStatus {
+  pending
+  confirmed
+  failed
+}
+
+enum DeliveryStatus {
+  pending
+  delivered
+  dead
+}
+
+model Restaurant {
+  id           String           @id
+  name         String
+  address      String
+  city         String
+  phone        String?
+  website      String?
+  lat          Float?
+  lng          Float?
+  timezone     String
+  maxPartySize Int              @default(20) @map("max_party_size")
+  source       RestaurantSource @default(manual)
+  spiceRef     String?          @unique @map("spice_ref")
+  active       Boolean          @default(true)
+  syncedAt     DateTime?        @map("synced_at")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  updatedAt    DateTime         @updatedAt @map("updated_at")
+
+  venueMappings VenueMapping[]
+
+  @@map("restaurants")
+}
+
+model VenueMapping {
+  id             String         @id @default(uuid())
+  restaurantId   String         @map("restaurant_id")
+  platform       String
+  venueId        String         @map("venue_id")
+  venueUrl       String?        @map("venue_url")
+  confidence     Float          @default(1)
+  status         MappingStatus  @default(proposed)
+  evidence       Json?
+  source         MappingSource  @default(human)
+  bookable       Boolean        @default(true)
+  recaptchaMode  RecaptchaMode? @map("recaptcha_mode")
+  flagsCheckedAt DateTime?      @map("flags_checked_at")
+  verifiedAt     DateTime?      @map("verified_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id])
+
+  @@unique([restaurantId, platform])
+  @@map("venue_mappings")
+}
+
+model ApiClient {
+  id           String       @id @default(uuid())
+  name         String
+  contactEmail String?      @map("contact_email")
+  // When set and SERVICE_AUTH_TENANT_CLAIM is configured, the JWT's tenant claim must equal this value.
+  tenant       String?
+  status       ActiveStatus @default(active)
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  keys ApiKey[]
+
+  @@map("api_clients")
+}
+
+model ApiKey {
+  id         String       @id @default(uuid())
+  clientId   String       @map("client_id")
+  prefix     String       @unique
+  keyHash    String       @map("key_hash")
+  scopes     String[]
+  status     ActiveStatus @default(active)
+  expiresAt  DateTime?    @map("expires_at")
+  lastUsedAt DateTime?    @map("last_used_at")
+  createdBy  String?      @map("created_by")
+  createdAt  DateTime     @default(now()) @map("created_at")
+  revokedAt  DateTime?    @map("revoked_at")
+
+  client ApiClient @relation(fields: [clientId], references: [id])
+
+  @@map("api_keys")
+}
+
+model Reservation {
+  id                       String            @id
+  apiClientId              String            @map("api_client_id")
+  // HMAC of the service JWT's issuer + subject: who the booking is for, without storing the subject.
+  userRef                  String            @map("user_ref")
+  idempotencyKey           String            @map("idempotency_key")
+  requestHash              String            @map("request_hash")
+  restaurantId             String            @map("restaurant_id")
+  platform                 String
+  venueId                  String            @map("venue_id")
+  datetime                 DateTime
+  localDate                String            @map("local_date")
+  localTime                String            @map("local_time")
+  partySize                Int               @map("party_size")
+  notes                    String?
+  status                   ReservationStatus @default(pending)
+  platformConfirmationCode String?           @map("platform_confirmation_code")
+  bookingAttempts          Int               @default(0) @map("booking_attempts")
+  // True while a submit attempt is running. If a worker crashes mid-attempt, the next pickup sees this
+  // and fails with OUTCOME_UNKNOWN instead of retrying, so a table is never booked twice.
+  inFlight                 Boolean           @default(false) @map("in_flight")
+  submitted                Boolean           @default(false)
+  scriptId                 String?           @map("script_id")
+  errorCode                String?           @map("error_code")
+  errorDetail              String?           @map("error_detail")
+  requestId                String            @map("request_id")
+  createdAt                DateTime          @default(now()) @map("created_at")
+  updatedAt                DateTime          @updatedAt @map("updated_at")
+
+  @@unique([apiClientId, idempotencyKey])
+  @@index([status, createdAt])
+  @@index([apiClientId, userRef, datetime])
+  @@map("reservations")
+}
+
+// Outbox for the reservation status webhook (DESIGN.md §4.5).
+model WebhookDelivery {
+  eventId        String         @id @map("event_id")
+  eventType      String         @map("event_type")
+  reservationId  String         @map("reservation_id")
+  payload        Json
+  status         DeliveryStatus @default(pending)
+  attempts       Int            @default(0)
+  replays        Int            @default(0)
+  nextAttemptAt  DateTime       @default(now()) @map("next_attempt_at")
+  lastHttpStatus Int?           @map("last_http_status")
+  lastError      String?        @map("last_error")
+  deliveredAt    DateTime?      @map("delivered_at")
+  createdAt      DateTime       @default(now()) @map("created_at")
+  updatedAt      DateTime       @updatedAt @map("updated_at")
+
+  @@index([status, nextAttemptAt])
+  @@index([reservationId])
+  @@map("webhook_deliveries")
+}
+
+// Append-only. A migration adds a trigger that rejects UPDATE and DELETE (DESIGN.md §8.1).
+model AuditLog {
+  id           String   @id
+  occurredAt   DateTime @map("occurred_at")
+  actorType    String   @map("actor_type")
+  actorId      String?  @map("actor_id")
+  apiKeyPrefix String?  @map("api_key_prefix")
+  userRef      String?  @map("user_ref")
+  tokenIssuer  String?  @map("token_issuer")
+  action       String
+  resourceType String?  @map("resource_type")
+  resourceId   String?  @map("resource_id")
+  outcome      String
+  requestId    String?  @map("request_id")
+  ip           String?
+  userAgent    String?  @map("user_agent")
+  changes      Json?
+  metadata     Json?
+
+  @@index([resourceType, resourceId])
+  @@index([actorId, occurredAt])
+  @@index([action, occurredAt])
+  @@map("audit_logs")
+}
+
+model ErrorLog {
+  id            String   @id
+  occurredAt    DateTime @default(now()) @map("occurred_at")
+  source        String
+  severity      String
+  errorCode     String   @map("error_code")
+  message       String
+  stack         String?
+  fingerprint   String
+  requestId     String?  @map("request_id")
+  apiClientId   String?  @map("api_client_id")
+  reservationId String?  @map("reservation_id")
+  context       Json?
+
+  @@index([fingerprint, occurredAt])
+  @@index([errorCode, occurredAt])
+  @@index([requestId])
+  @@map("error_logs")
+}

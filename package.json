@@ -1,0 +1,101 @@
+{
+  "name": "spice-booking-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Books restaurant tables on outside reservation platforms (pilot: SevenRooms). See DESIGN.md.",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "scripts": {
+    "build": "rimraf dist && tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
+    "start:api": "node dist/apps/api/src/main.js",
+    "start:worker": "node dist/apps/worker/src/main.js",
+    "dev:api": "node --watch -r ts-node/register/transpile-only -r tsconfig-paths/register apps/api/src/main.ts",
+    "dev:worker": "node --watch -r ts-node/register/transpile-only -r tsconfig-paths/register apps/worker/src/main.ts",
+    "apikey:create": "ts-node --transpile-only -r tsconfig-paths/register apps/api/src/cli/create-api-key.ts",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:deploy": "prisma migrate deploy",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "jest --selectProjects unit",
+    "test:e2e": "jest --selectProjects e2e --runInBand"
+  },
+  "dependencies": {
+    "@fastify/helmet": "13.0.1",
+    "@nestjs/bullmq": "11.0.4",
+    "@nestjs/common": "11.1.6",
+    "@nestjs/config": "4.0.2",
+    "@nestjs/core": "11.1.6",
+    "@nestjs/platform-fastify": "11.1.6",
+    "@nestjs/schedule": "5.0.1",
+    "@nestjs/throttler": "6.4.0",
+    "@prisma/client": "6.16.2",
+    "bullmq": "5.58.5",
+    "class-transformer": "0.5.1",
+    "class-validator": "0.14.2",
+    "dotenv": "16.6.1",
+    "ioredis": "5.7.0",
+    "jose": "5.10.0",
+    "nestjs-pino": "4.4.0",
+    "pino-http": "10.5.0",
+    "reflect-metadata": "0.2.2",
+    "rxjs": "7.8.2",
+    "ulid": "2.4.0",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "11.1.6",
+    "@types/jest": "29.5.14",
+    "@types/node": "20.19.9",
+    "@types/supertest": "6.0.3",
+    "jest": "29.7.0",
+    "pino-pretty": "13.1.1",
+    "prisma": "6.16.2",
+    "rimraf": "6.0.1",
+    "supertest": "7.1.4",
+    "ts-jest": "29.4.1",
+    "ts-node": "10.9.2",
+    "tsc-alias": "1.8.16",
+    "tsconfig-paths": "4.2.0",
+    "typescript": "5.7.3"
+  },
+  "jest": {
+    "projects": [
+      {
+        "displayName": "unit",
+        "rootDir": ".",
+        "testEnvironment": "node",
+        "testRegex": "(apps|libs)/.*\\.spec\\.ts$",
+        "transform": {
+          "^.+\\.ts$": [
+            "ts-jest",
+            {
+              "tsconfig": "tsconfig.json"
+            }
+          ]
+        },
+        "moduleNameMapper": {
+          "^@app/(common|database|logging|audit|contact|providers|webhooks)(.*)$": "<rootDir>/libs/$1/src$2"
+        }
+      },
+      {
+        "displayName": "e2e",
+        "rootDir": ".",
+        "testEnvironment": "node",
+        "testRegex": "test/.*\\.e2e-spec\\.ts$",
+        "testTimeout": 60000,
+        "transform": {
+          "^.+\\.ts$": [
+            "ts-jest",
+            {
+              "tsconfig": "tsconfig.json"
+            }
+          ]
+        },
+        "moduleNameMapper": {
+          "^@app/(common|database|logging|audit|contact|providers|webhooks)(.*)$": "<rootDir>/libs/$1/src$2"
+        }
+      }
+    ]
+  }
+}
